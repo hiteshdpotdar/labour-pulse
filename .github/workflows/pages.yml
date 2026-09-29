@@ -1,0 +1,92 @@
+# Every 6 hours (and on every push to main): collect new stories, rebuild the site, publish it to GitHub Pages.
+# The database is carried from run to run in the Actions cache. The very first run starts from an empty
+# database and reads the last 30 days, so the site isn't empty on day one.
+# Free for public repositories. You can also start a run by hand: Actions tab > "Collect and publish" > Run workflow.
+name: Collect and publish
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # 00:17, 06:17, 12:17, 18:17 UTC (off the hour, when GitHub is less busy)
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  collect-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install certifi (Mozilla's certificate list)
+        run: pip install --quiet certifi
+
+      - name: Restore the database
+        uses: actions/cache/restore@v4
+        with:
+          path: labourpulse.db
+          key: labourpulse-db-v1-${{ github.run_id }}
+          restore-keys: labourpulse-db-v1-
+
+      - name: Collect
+        env:
+          CROSSREF_MAILTO: ${{ secrets.CROSSREF_MAILTO }}
+        run: python -m labourpulse collect
+
+      # Applies any change you made to the sorting rules (classify.py) to stories already stored.
+      - name: Re-sort stored stories with the current rules
+        run: python -m labourpulse reclassify
+
+      - name: Fold the write-ahead log into the database file
+        if: always()
+        run: python -c "import sqlite3; c = sqlite3.connect('labourpulse.db'); c.execute('PRAGMA wal_checkpoint(TRUNCATE)'); c.execute('PRAGMA journal_mode=DELETE'); c.close()"
+
+      - name: Save the database
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: labourpulse.db
+          key: labourpulse-db-v1-${{ github.run_id }}
+
+      - name: Build the site
+        run: python -m labourpulse build --out site
+
+      # Shown on the run's page: which sources failed, readable from a phone.
+      - name: Report
+        if: always()
+        run: python -m labourpulse status >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pytest && python -m pytest -q
