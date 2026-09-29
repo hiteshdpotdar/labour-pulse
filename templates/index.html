@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{SITE_NAME}}</title>
+<meta name="description" content="{{TAGLINE}}">
+<link rel="alternate" type="application/rss+xml" title="{{SITE_NAME}}" href="feed.xml">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23B3261E'/><path d='M4 18h6l3-8 5 14 3-6h7' stroke='white' stroke-width='3' fill='none'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wdth,wght@75..100,500..800&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #ECEDE8; --card: #F6F6F3; --ink: #1A1D22; --muted: #5B626C; --rule: #C8CBC3;
+  --red: #B3261E; --mast: #B3261E; --on-red: #FFF;
+  --s-news: #B3261E; --s-platform: #2D4A6B; --s-policy: #8A6212; --s-law: #2F6B4F; --s-theory: #6B3A6B; --s-research: #4A5566;
+  --display: "Anek Devanagari", "Arial Narrow", "Noto Sans Devanagari", sans-serif;
+  --body: "Mukta", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #15171A; --card: #1D2024; --ink: #E7E8E4; --muted: #A2A8B0; --rule: #33373D;
+    --red: #D9463C; --mast: #9E2019; --s-news: #E0655B; --s-platform: #7FA3CF; --s-policy: #D2A447; --s-law: #6BB38E; --s-theory: #C08BC0; --s-research: #A3AEC0;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #15171A; --card: #1D2024; --ink: #E7E8E4; --muted: #A2A8B0; --rule: #33373D;
+  --red: #D9463C; --mast: #9E2019; --s-news: #E0655B; --s-platform: #7FA3CF; --s-policy: #D2A447; --s-law: #6BB38E; --s-theory: #C08BC0; --s-research: #A3AEC0;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.55 var(--body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+/* The masthead: the one loud thing on the page */
+.mast { background: var(--mast); color: var(--on-red); padding: 2rem 1.25rem 1.1rem; }
+.mast-inner { max-width: 70rem; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: .5rem 2rem; align-items: end; }
+.mast h1 { margin: 0; font: 800 clamp(3rem, 11vw, 7.5rem)/.9 var(--display); font-stretch: 75%; letter-spacing: -.01em; }
+.mast p { margin: .5rem 0 0; font-size: 1.05rem; max-width: 38rem; }
+.pulse { text-align: right; font-size: .95rem; line-height: 1.35; }
+.pulse strong { display: block; font: 700 2.25rem/1 var(--display); font-stretch: 80%; }
+@media (max-width: 40rem) { .mast-inner { grid-template-columns: 1fr; } .pulse { text-align: left; } }
+
+main { max-width: 70rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+/* Streams */
+nav.streams { display: flex; gap: .25rem; overflow-x: auto; border-bottom: 1px solid var(--rule); margin: 0 -1.25rem; padding: 0 1.25rem; scrollbar-width: none; }
+nav.streams button { flex: none; border: 0; background: none; color: var(--muted); font: 600 1.05rem/1 var(--display); font-stretch: 90%;
+  padding: 1rem .75rem .8rem; border-bottom: 4px solid transparent; cursor: pointer; }
+nav.streams button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--sc, var(--ink)); }
+nav.streams button span { font: 400 .85rem var(--body); margin-left: .3rem; color: var(--muted); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; padding: 1rem 0; }
+.filters input, .filters select { font: inherit; font-size: .95rem; color: var(--ink); background: var(--card); border: 1px solid var(--rule);
+  border-radius: 6px; padding: .45rem .6rem; min-height: 2.5rem; }
+.filters input[type="search"] { flex: 1 1 16rem; }
+.langs { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.langs button { font: inherit; font-size: .95rem; border: 0; background: var(--card); color: var(--muted); padding: .45rem .75rem; cursor: pointer; min-height: 2.5rem; }
+.langs button + button { border-left: 1px solid var(--rule); }
+.langs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.active-tag { display: inline-flex; gap: .4rem; align-items: center; font-size: .9rem; background: var(--ink); color: var(--paper); border-radius: 999px; padding: .2rem .4rem .2rem .75rem; }
+.active-tag button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0 .3rem; }
+
+.intro { color: var(--muted); font-size: .95rem; margin: 0 0 1rem; max-width: 46rem; }
+
+/* Cards */
+.layout { display: grid; grid-template-columns: minmax(0, 46rem) minmax(0, 1fr); gap: 3rem; }
+@media (max-width: 60rem) { .layout { grid-template-columns: 1fr; } aside { order: 2; } }
+ol.cards { list-style: none; margin: 0; padding: 0; }
+.card { position: relative; background: var(--card); border-radius: 4px; padding: 1rem 1.1rem 1rem 1.35rem; margin-bottom: .75rem; }
+.card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 4px 0 0 4px; background: var(--sc); }
+.meta { display: flex; flex-wrap: wrap; gap: .15rem 1rem; font-size: .85rem; color: var(--muted); }
+.meta .src { color: var(--ink); font-weight: 600; }
+.card h2 { margin: .25rem 0 .35rem; font: 600 1.3rem/1.22 var(--display); font-stretch: 92%; }
+.card h2 a { text-decoration: none; }
+.card h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.card p.sum { margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card .authors { font-size: .9rem; color: var(--muted); margin: .2rem 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .6rem; }
+.chip { font: inherit; font-size: .8rem; line-height: 1; border: 1px solid var(--rule); background: none; color: var(--muted); border-radius: 999px; padding: .35rem .6rem; cursor: pointer; }
+.chip:hover { color: var(--ink); border-color: var(--muted); }
+.chip.place { border-style: dashed; }
+.also { font-size: .85rem; color: var(--muted); margin-top: .5rem; }
+.also a { margin-right: .6rem; }
+
+/* Law tracker stages */
+.track { display: grid; grid-template-columns: repeat(var(--n), 1fr); margin: .75rem 0 .1rem; font-size: .78rem; color: var(--muted); }
+.track div { position: relative; padding-top: 1rem; padding-right: .3rem; }
+.track div::before { content: ""; position: absolute; top: .3rem; left: 0; right: 0; height: 3px; background: var(--rule); }
+.track div::after { content: ""; position: absolute; top: 0; left: 0; width: .7rem; height: .7rem; border-radius: 50%; background: var(--card); border: 2px solid var(--rule); }
+.track div.done::before, .track div.done::after { background: var(--s-law); border-color: var(--s-law); }
+.track div.end::after { background: var(--muted); border-color: var(--muted); }
+.track div.now { color: var(--ink); font-weight: 600; }
+.track time { display: block; font-weight: 400; }
+
+.more { font: 600 1rem var(--body); background: var(--ink); color: var(--paper); border: 0; border-radius: 6px; padding: .7rem 1.2rem; cursor: pointer; }
+.empty { padding: 2rem 0; color: var(--muted); }
+
+/* Side column */
+aside h3 { font: 700 1.15rem/1.2 var(--display); font-stretch: 90%; margin: 0 0 .5rem; }
+aside section { margin-bottom: 2rem; }
+.legend { list-style: none; padding: 0; margin: 0; font-size: .95rem; }
+.legend li { display: flex; gap: .6rem; align-items: baseline; margin-bottom: .35rem; }
+.legend i { flex: none; width: .8rem; height: .8rem; border-radius: 2px; background: var(--sc); transform: translateY(.1rem); }
+.toptags { display: flex; flex-wrap: wrap; gap: .35rem; }
+aside p { font-size: .95rem; color: var(--muted); margin: 0 0 .5rem; }
+
+footer { border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 1.5rem; font-size: .92rem; color: var(--muted); }
+footer details { margin-bottom: 1rem; }
+footer summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+.srclist { overflow-x: auto; }
+.srclist table { border-collapse: collapse; width: 100%; font-size: .88rem; margin-top: .75rem; }
+.srclist th, .srclist td { text-align: left; padding: .35rem .75rem .35rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.bad { color: var(--red); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="mast-inner">
+    <div>
+      <h1>{{SITE_NAME}}</h1>
+      <p>{{TAGLINE}}. English, हिन्दी and मराठी sources, sorted by rules, linked to the original.</p>
+    </div>
+    <div class="pulse" id="pulse" aria-live="polite"></div>
+  </div>
+</header>
+
+<main>
+  <nav class="streams" id="streams" aria-label="Streams"></nav>
+
+  <div class="filters" role="search">
+    <input type="search" id="q" placeholder="Search headlines, sources, authors…" aria-label="Search">
+    <div class="langs" id="langs" role="group" aria-label="Language"></div>
+    <select id="region" aria-label="Region"><option value="">All regions</option></select>
+    <select id="place" aria-label="Country or state"><option value="">All places</option></select>
+    <select id="days" aria-label="Period">
+      <option value="7">Past week</option><option value="30" selected>Past month</option>
+      <option value="90">Past 3 months</option><option value="180">Past 6 months</option>
+    </select>
+    <span id="tagfilter"></span>
+  </div>
+
+  <div class="layout">
+    <div>
+      <p class="intro" id="intro"></p>
+      <ol class="cards" id="cards"></ol>
+      <p class="empty" id="empty" hidden></p>
+      <button class="more" id="more" hidden>Show more</button>
+    </div>
+    <aside>
+      <section>
+        <h3>Streams</h3>
+        <ul class="legend" id="legend"></ul>
+      </section>
+      <section>
+        <h3>Most tagged this period</h3>
+        <div class="toptags" id="toptags"></div>
+      </section>
+      <section>
+        <h3>Follow it</h3>
+        <p><a href="feed.xml">RSS feed</a> of the newest stories, for any feed reader.</p>
+      </section>
+    </aside>
+  </div>
+
+  <footer>
+    <details id="sources">
+      <summary>Sources and licences</summary>
+      <p>Every source is read only where its robots.txt allows, and its terms were checked before it was added. Cards show the
+        publisher's own headline and description and link to the original; nothing behind a login or paywall is read.
+        Research metadata comes from Crossref; UK bills from the UK Parliament Bills API (Open Parliament Licence v3.0);
+        Indian bills from the Parliament of India (sansad.in). Sorting is by keyword rules, not an AI model.
+        Non-commercial. Built on <a href="https://github.com/shru14/ai-pulse">AI Pulse</a>.</p>
+      <div class="srclist"><table><thead><tr><th>Source</th><th>Stream</th><th>Language</th><th></th></tr></thead><tbody id="srcrows"></tbody></table></div>
+    </details>
+    <p id="foot"></p>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const PAGE = 40;
+  const state = { stream: "all", lang: "", region: "", place: "", days: 30, q: "", tag: "", shown: PAGE };
+  let DATA = null;
+
+  const fold = (s) => (s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtDay = (d) => new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const ago = (iso) => {
+    const h = Math.round((Date.now() - new Date(iso)) / 36e5);
+    return h < 1 ? "less than an hour ago" : h < 48 ? `${h} hour${h === 1 ? "" : "s"} ago` : `${Math.round(h / 24)} days ago`;
+  };
+  const streamColor = (s) => `var(--s-${s})`;
+
+  function readHash() {
+    const p = new URLSearchParams(location.hash.slice(1));
+    for (const k of ["stream", "lang", "region", "place", "q", "tag"]) if (p.has(k)) state[k] = p.get(k);
+    if (p.has("days")) state.days = +p.get("days");
+  }
+  function writeHash() {
+    const p = new URLSearchParams();
+    for (const k of ["stream", "lang", "region", "place", "q", "tag"]) if (state[k] && !(k === "stream" && state[k] === "all")) p.set(k, state[k]);
+    if (state.days !== 30) p.set("days", state.days);
+    history.replaceState(null, "", p.toString() ? "#" + p : location.pathname);
+  }
+
+  function inPeriod(c) { return (Date.now() - new Date(c.d + "T00:00:00Z")) / 864e5 <= state.days + 1; }
+  function matches(c, ignoreStream, ignoreTag) {
+    if (!ignoreStream && state.stream !== "all" && !c.st.includes(state.stream)) return false;
+    if (state.lang && c.l !== state.lang) return false;
+    if (state.place && !c.p.includes(state.place)) return false;
+    if (state.region && !state.place && !c.p.some((p) => (DATA.meta.places[p] || {}).region === state.region)) return false;
+    if (state.tag && !ignoreTag && !c.tg.includes(state.tag)) return false;
+    if (state.q) {
+      const hay = fold([c.t, c.s, c.src, c.a, c.tg.join(" ")].join(" "));
+      if (!fold(state.q).split(/\s+/).filter(Boolean).every((w) => hay.includes(w))) return false;
+    }
+    return inPeriod(c);
+  }
+
+  function renderStreams() {
+    const counts = { all: 0 };
+    for (const c of DATA.items) if (matches(c, true)) { counts.all++; for (const s of c.st) counts[s] = (counts[s] || 0) + 1; }
+    const entries = [["all", "All"], ...Object.entries(DATA.meta.streams)];
+    $("streams").innerHTML = entries.map(([k, name]) =>
+      `<button type="button" data-s="${k}" aria-pressed="${state.stream === k}" style="--sc:${k === "all" ? "var(--ink)" : streamColor(k)}">${esc(name)}<span>${counts[k] || 0}</span></button>`).join("");
+  }
+
+  const INTROS = {
+    all: "Everything collected, newest first. The coloured edge of each card shows its stream.",
+    news: "Strikes, organising, unions and workplaces, from the labour and left press.",
+    platform: "Gig, app-based, domestic and care work across every stream: news, law, research and theory.",
+    policy: "Governments, ministries, courts and the ILO acting on work.",
+    law: "Bills and laws on work. Cards from an official record show every stage reached, with its date.",
+    theory: "Marxist and radical political economy writing.",
+    research: "New articles from labour, development and political economy journals, as their publishers register them.",
+  };
+
+  function card(c) {
+    const main = c.st[0];
+    const places = c.p.filter((p) => DATA.meta.places[p]).map((p) =>
+      `<button type="button" class="chip place" data-place="${p}">${esc(DATA.meta.places[p].name)}</button>`).join("");
+    const tags = c.tg.map((t) => `<button type="button" class="chip" data-tag="${esc(t)}">${esc(t)}</button>`).join("");
+    const lang = c.l !== "en" ? ` lang="${c.l}"` : "";
+    let track = "";
+    if (c.bill) {
+      const steps = c.bill.steps;
+      const cur = steps.findIndex((s) => s.stage === c.bill.current);
+      track = `<div class="track" style="--n:${steps.length}" aria-label="Stages">` + steps.map((s, i) => {
+        const cls = [s.date ? "done" : "", i === cur ? "now" : "", ["defeated", "withdrawn", "lapsed"].includes(s.stage) ? "end" : ""].join(" ");
+        return `<div class="${cls}">${esc(s.label)}${s.date ? `<time datetime="${s.date}">${fmtDay(s.date)}</time>` : ""}</div>`;
+      }).join("") + "</div>";
+    }
+    const also = c.also ? `<div class="also">Also reported by ${c.also.map((a) => `<a href="${esc(a.u)}" rel="noopener">${esc(a.src)}</a>`).join("")}</div>` : "";
+    return `<li class="card" style="--sc:${streamColor(main)}">
+      <div class="meta"><span class="src">${esc(c.src)}</span><time datetime="${c.d}">${fmtDay(c.d)}</time>${c.st.length > 1 || state.stream === "all" ? `<span>${c.st.map((s) => esc(DATA.meta.streams[s])).join(", ")}</span>` : ""}</div>
+      <h2${lang}><a href="${esc(c.u)}" rel="noopener">${esc(c.t)}</a></h2>
+      ${c.a ? `<p class="authors">${esc(c.a)}</p>` : ""}
+      ${c.s ? `<p class="sum"${lang}>${esc(c.s)}</p>` : ""}
+      ${track}
+      ${places || tags ? `<div class="chips">${places}${tags}</div>` : ""}
+      ${also}
+    </li>`;
+  }
+
+  function render(resetPage) {
+    if (resetPage) state.shown = PAGE;
+    writeHash();
+    renderStreams();
+    const list = DATA.items.filter((c) => matches(c));
+    $("intro").textContent = INTROS[state.stream] || "";
+    $("cards").innerHTML = list.slice(0, state.shown).map(card).join("");
+    $("more").hidden = list.length <= state.shown;
+    $("empty").hidden = list.length > 0;
+    $("empty").textContent = "No stories match these filters. Widen the period or clear the search to see more.";
+    $("tagfilter").innerHTML = state.tag ? `<span class="active-tag">${esc(state.tag)}<button type="button" id="cleartag" aria-label="Remove tag filter">×</button></span>` : "";
+    const tally = {};
+    for (const c of DATA.items) if (matches(c, false, true)) for (const t of c.tg) tally[t] = (tally[t] || 0) + 1;
+    $("toptags").innerHTML = Object.entries(tally).sort((a, b) => b[1] - a[1]).slice(0, 14)
+      .map(([t, n]) => `<button type="button" class="chip" data-tag="${esc(t)}">${esc(t)} ${n}</button>`).join("") || "<p>None yet.</p>";
+  }
+
+  function fillPlaces() {
+    const places = Object.entries(DATA.meta.places)
+      .filter(([, v]) => !state.region || v.region === state.region)
+      .sort((a, b) => (a[1].parent ? DATA.meta.places[a[1].parent]?.name + " " + a[1].name : a[1].name).localeCompare(b[1].parent ? DATA.meta.places[b[1].parent]?.name + " " + b[1].name : b[1].name));
+    $("place").innerHTML = `<option value="">All places</option>` + places.map(([k, v]) =>
+      `<option value="${k}"${k === state.place ? " selected" : ""}>${v.parent ? "\u2003" : ""}${esc(v.name)}</option>`).join("");
+  }
+
+  function setup() {
+    const m = DATA.meta;
+    const week = DATA.items.filter((c) => (Date.now() - new Date(c.d + "T00:00:00Z")) / 864e5 <= 7).length;
+    $("pulse").innerHTML = `<strong>${week}</strong>stories this week<br>updated ${ago(m.updated)}`;
+    $("langs").innerHTML = [["", "All"], ...Object.entries(m.langs)].map(([k, n]) =>
+      `<button type="button" data-lang="${k}" aria-pressed="${state.lang === k}"${k && k !== "en" ? ` lang="${k}"` : ""}>${n}</button>`).join("");
+    $("region").innerHTML = `<option value="">All regions</option>` + Object.entries(m.regions).map(([k, n]) =>
+      `<option value="${k}"${k === state.region ? " selected" : ""}>${esc(n)}</option>`).join("");
+    fillPlaces();
+    $("days").value = String(state.days);
+    $("q").value = state.q;
+    $("legend").innerHTML = Object.entries(m.streams).map(([k, n]) => `<li style="--sc:${streamColor(k)}"><i></i>${esc(n)}</li>`).join("");
+    $("srcrows").innerHTML = m.sources.map((s) =>
+      `<tr><td><a href="${esc(s.url)}" rel="noopener">${esc(s.name)}</a></td><td>${esc(s.stream)}</td><td>${esc(s.lang)}</td><td>${s.failing ? '<span class="bad">Not answering</span>' : ""}</td></tr>`).join("");
+    $("foot").innerHTML = `Updated ${new Date(m.updated).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}. <a href="${esc(m.repo)}">Code and how it works</a>.`;
+  }
+
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.s !== undefined) { state.stream = b.dataset.s; render(true); }
+    else if (b.dataset.lang !== undefined) { state.lang = b.dataset.lang; document.querySelectorAll("#langs button").forEach((x) => x.setAttribute("aria-pressed", x === b)); render(true); }
+    else if (b.dataset.tag) { state.tag = b.dataset.tag; render(true); window.scrollTo({ top: $("streams").offsetTop }); }
+    else if (b.dataset.place) { state.place = b.dataset.place; state.region = ""; $("region").value = ""; fillPlaces(); render(true); }
+    else if (b.id === "cleartag") { state.tag = ""; render(true); }
+    else if (b.id === "more") { state.shown += PAGE; render(false); }
+  });
+  let timer;
+  $("q").addEventListener("input", (e) => { clearTimeout(timer); timer = setTimeout(() => { state.q = e.target.value.trim(); render(true); }, 150); });
+  $("region").addEventListener("change", (e) => { state.region = e.target.value; state.place = ""; fillPlaces(); render(true); });
+  $("place").addEventListener("change", (e) => { state.place = e.target.value; render(true); });
+  $("days").addEventListener("change", (e) => { state.days = +e.target.value; render(true); });
+
+  readHash();
+  fetch("data/stories.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {
+    DATA = d; setup(); render(true);
+  }).catch(() => {
+    $("empty").hidden = false;
+    $("empty").textContent = "The story list couldn't be loaded. Reload the page; if it keeps failing, the latest build may still be running.";
+  });
+})();
+</script>
+</body>
+</html>

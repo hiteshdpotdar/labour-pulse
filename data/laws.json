@@ -1,0 +1,18 @@
+{
+  "_help": "Laws the official APIs don't cover (e.g. Indian state laws on gig or domestic work). Add one object per law to \"laws\". jurisdiction: a country code (IN, GB, ...) or an Indian state (IN-KA, IN-RJ, IN-MH ...). stages: any of introduced, passed_chamber, passed_legislature, signed, in_force, defeated, withdrawn, lapsed, each with its date (YYYY-MM-DD). Delete the example's \"example\": true line only after replacing its details with a real law you have checked.",
+  "laws": [
+    {
+      "example": true,
+      "title": "Example State Platform-based Gig Workers (Social Security and Welfare) Act",
+      "jurisdiction": "IN-KA",
+      "url": "https://example.org/official-gazette-link",
+      "source": "State Gazette",
+      "summary": "One or two sentences on what the law does.",
+      "stages": [
+        {"date": "2025-01-01", "stage": "introduced", "text": "Introduced in the Legislative Assembly"},
+        {"date": "2025-02-01", "stage": "passed_legislature", "text": "Passed"},
+        {"date": "2025-03-01", "stage": "signed", "text": "Governor's assent"}
+      ]
+    }
+  ]
+}
