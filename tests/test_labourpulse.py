@@ -179,3 +179,18 @@ def test_moved_feed_is_found_from_homepage(conn):
                                                   "lang": "en"}], max_age_days=30, fetcher=fetch, log=lambda *_: None)
     assert added == 2 and not errors
     assert store.source_health(conn)[0]["url"] == "https://moved.example/news/rss"
+
+
+def test_indian_dates_and_bad_dates_repaired(tmp_path):
+    assert bills.iso_day("30/12/1964") == "1964-12-30" and bills.iso_day("2019-07-23T00:00:00") == "2019-07-23"
+    assert bills.iso_day("31/02/2020") == "" and bills.iso_day(None) == ""
+    h = bills.in_history({"billIntroducedDate": "23/07/2019", "billPassedInLSDate": "30/07/2019"})
+    assert [x["date"] for x in h] == ["2019-07-23", "2019-07-30"]
+    c = store.connect(tmp_path / "old.db")
+    c.execute("INSERT INTO items (id, url, title, source, streams, date, added_at) VALUES "
+              "('a','https://x','Old bill','Parliament of India','law','30/12/1964','now')")
+    c.commit()
+    c.close()
+    c = store.connect(tmp_path / "old.db")  # reopening repairs it
+    assert c.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 0
+    build.build(c, tmp_path / "site")

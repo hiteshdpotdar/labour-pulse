@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from datetime import date
 from pathlib import Path
 
 from . import classify, feeds, jurisdictions, store
@@ -92,7 +93,7 @@ def uk_history(bill: dict, stages: list[dict]) -> list[dict]:
     reached: dict[str, dict] = {}
     third: dict[str, str] = {}
     for st in stages:
-        dates = sorted(s["date"][:10] for s in st.get("stageSittings") or [] if s.get("date"))
+        dates = sorted(d for s in st.get("stageSittings") or [] if (d := iso_day(s.get("date"))))
         if not dates:
             continue
         what, house = st.get("description", ""), st.get("house", "")
@@ -148,8 +149,21 @@ _IN_QUERY = ("loksabha=&sessionNo=&house=&ministryName=&billType=&billCategory=&
              "&page=1&size=50&locale=en&sortOn=billIntroducedDate&sortBy=desc")
 
 
+def iso_day(raw) -> str:
+    """A date as YYYY-MM-DD, from "2019-07-23", "2019-07-23T00:00:00" or sansad.in's "23/07/2019"; "" if unreadable."""
+    raw = str(raw or "").strip()
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", raw) or re.match(r"(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})", raw)
+    if not m:
+        return ""
+    y, mo, d = (m.group(1), m.group(2), m.group(3)) if len(m.group(1)) == 4 else (m.group(3), m.group(2), m.group(1))
+    try:
+        return date(int(y), int(mo), int(d)).isoformat()
+    except ValueError:
+        return ""
+
+
 def in_history(b: dict) -> list[dict]:
-    day = lambda k: (b.get(k) or "")[:10]
+    day = lambda k: iso_day(b.get(k))
     history = []
     if day("billIntroducedDate"):
         history.append({"date": day("billIntroducedDate"), "stage": "introduced",
@@ -200,7 +214,8 @@ def sync_manual(conn, path: Path = LAWS_FILE, log=print) -> int:
         changed += upsert(conn, {"key": "MANUAL-" + re.sub(r"[^a-z0-9]+", "-", law["title"].lower()).strip("-"),
                                  "jurisdiction": code, "title": law["title"], "url": law["url"],
                                  "source": law.get("source", "Hand-kept record"), "summary": law.get("summary", ""),
-                                 "history": sorted(law["stages"], key=lambda h: h["date"])})
+                                 "history": sorted(({**h, "date": iso_day(h["date"])} for h in law["stages"] if iso_day(h.get("date"))),
+                                                    key=lambda h: h["date"])})
     conn.commit()
     return changed
 

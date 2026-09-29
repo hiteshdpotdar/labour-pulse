@@ -31,6 +31,10 @@ def cards(conn, days: int = SITE_DAYS) -> list[dict]:
     for r in rows:
         if r["lead"] and r["lead"] in by_id:
             continue
+        try:
+            datetime.fromisoformat(r["date"])
+        except ValueError:  # an unreadable date never stops the build
+            continue
         card = {"id": r["id"], "t": r["title"], "u": r["url"], "s": r["summary"], "src": r["source"], "l": r["lang"],
                 "st": r["streams"].split(","), "tg": [t for t in r["tags"].split(",") if t],
                 "p": [p for p in r["places"].split(",") if p], "d": r["date"]}

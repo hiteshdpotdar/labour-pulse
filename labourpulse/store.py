@@ -71,6 +71,10 @@ def connect(path: str | Path) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(SCHEMA)
+    # Repair: stories stored with a date that isn't YYYY-MM-DD (early Indian bill records, "30/12/1964").
+    # Law-tracker cards are re-read from the official record on the next run.
+    conn.execute("DELETE FROM items WHERE date NOT GLOB '[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]'")
+    conn.commit()
     return conn
 
 
