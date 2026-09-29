@@ -56,6 +56,14 @@ def main():
         run = store.last_run(conn)
         total = conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
         print(f"### {total} stories stored" + (f"; last run added {run['added']}" if run else ""))
+        from .sources import SOURCES
+        configured = {x["name"]: x["url"] for x in SOURCES}
+        moved = [h for h in store.source_health(conn) if h["name"] in configured and h["failures"] == 0
+                 and h["url"] != configured[h["name"]]]
+        if moved:
+            print("\n**Feeds found at a new address** (put these in labourpulse/sources.py):\n")
+            for h in moved:
+                print(f"- {h['name']}: `{h['url']}`")
         bad = [h for h in store.source_health(conn) if h["failures"] > 0]
         if bad:
             print("\n| Source | Failures in a row | Last error |\n|---|---|---|")

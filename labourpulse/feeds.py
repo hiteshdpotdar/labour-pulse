@@ -233,3 +233,21 @@ def parse_govuk(json_bytes: bytes) -> list[dict]:
 
 
 PARSERS = {"feed": parse, "federal_register": parse_federal_register, "govuk": parse_govuk}
+
+
+# A feed link a page advertises in its <head>: <link rel="alternate" type="application/rss+xml" href="...">
+_ALTERNATE = re.compile(r"<link\b[^>]*>", re.I)
+
+
+def discover(url: str, fetcher=None) -> str | None:
+    """The feed a site's homepage advertises, for a feed address that has moved. robots.txt still applies
+    (the homepage is fetched with fetch()). Comment feeds are skipped."""
+    parts = urlsplit(url)
+    home = f"{parts.scheme}://{parts.netloc}/"
+    page = (fetcher or fetch)(home).decode("utf-8", "replace")
+    for tag in _ALTERNATE.findall(page):
+        if re.search(r"rel=[\"']?alternate", tag, re.I) and re.search(r"type=[\"']?application/(rss|atom)\+xml", tag, re.I):
+            href = re.search(r"href=[\"']([^\"']+)", tag, re.I)
+            if href and "comment" not in href.group(1).lower():
+                return urllib.parse.urljoin(home, html.unescape(href.group(1)))
+    return None

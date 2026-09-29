@@ -13,7 +13,6 @@ check `python -m labourpulse sources` (or the Actions run page): a feed address 
 | ☐ | Labor Notes | en | https://labornotes.org/rss.xml |  |
 | ☐ | Equal Times | en | https://www.equaltimes.org/spip.php?page=backend&lang=en |  |
 | ☐ | Payday Report | en | https://paydayreport.com/feed/ |  |
-| ☐ | ITUC | en | https://www.ituc-csi.org/spip.php?page=backend&lang=en |  |
 | ☐ | IndustriALL | en | https://www.industriall-union.org/feed | Feed address unconfirmed |
 | ☐ | UNI Global Union | en | https://uniglobalunion.org/feed/ |  |
 | ☐ | Peoples Dispatch | en | https://peoplesdispatch.org/feed/ |  |
@@ -23,14 +22,12 @@ check `python -m labourpulse sources` (or the Actions run page): a feed address 
 | ☐ | Africa Is a Country | en | https://africasacountry.com/feed |  |
 | ☐ | Rest of World | en | https://restofworld.org/feed/latest | General tech outlet: labour stories only |
 | ☐ | GroundXero | en | https://www.groundxero.in/feed/ |  |
-| ☐ | Countercurrents | en | https://countercurrents.org/feed/ |  |
 | ☐ | The India Forum | en | https://www.theindiaforum.in/rss.xml | Feed address unconfirmed |
 | ☐ | Fairwork | en | https://fair.work/en/feed/ |  |
 | ☐ | WIEGO | en | https://www.wiego.org/rss.xml | Feed address unconfirmed |
 | ☐ | मज़दूर बिगुल (Mazdoor Bigul) | hi | https://www.mazdoorbigul.net/feed |  |
 | ☐ | वर्कर्स यूनिटी (Workers Unity) | hi | https://www.workersunity.com/feed/ |  |
 | ☐ | मेहनतकश (Mehnatkash) | hi | https://mehnatkash.in/feed/ |  |
-| ☐ | जनचौक (Janchowk) | hi | https://janchowk.com/feed/ |  |
 | ☐ | द वायर हिंदी (The Wire Hindi) | hi | https://thewirehindi.com/feed/ |  |
 | ☐ | लोकसत्ता (Loksatta) | mr | https://www.loksatta.com/feed/ | Commercial daily (Indian Express group): check its terms carefully |
 | ☐ | मॅक्स महाराष्ट्र (Max Maharashtra) | mr | https://www.maxmaharashtra.com/feed | Feed address unconfirmed |
@@ -43,7 +40,6 @@ check `python -m labourpulse sources` (or the Actions run page): a feed address 
 | ☐ | Tricontinental | en | https://thetricontinental.org/feed/ |  |
 | ☐ | Developing Economics | en | https://developingeconomics.org/feed/ |  |
 | ☐ | ROAPE | en | https://roape.net/feed/ |  |
-| ☐ | Global Labour Column | en | https://globallabourcolumn.org/feed/ |  |
 | ☐ | ILO | en | https://www.ilo.org/rss.xml | Feed address unconfirmed since the ILO's 2024 site redesign |
 | ☐ | GOV.UK (employment rights) | en | https://www.gov.uk/api/search.json?q=%22employment+rights%22&order=-public_timestamp&count=40 |  |
 | ☐ | GOV.UK (minimum wage) | en | https://www.gov.uk/api/search.json?q=%22minimum+wage%22&order=-public_timestamp&count=40 |  |
@@ -63,7 +59,6 @@ Crossref's metadata is openly reusable; nothing to check per journal except that
 | Historical Materialism | 1569-206X |
 | Review of Radical Political Economics | 1552-8502 |
 | Science & Society | 1943-2801 |
-| Global Labour Journal | 1918-7351 |
 | Work, Employment and Society | 1469-8722 |
 | Economic and Industrial Democracy | 1461-7099 |
 | Industrial Relations Journal | 1468-2338 |

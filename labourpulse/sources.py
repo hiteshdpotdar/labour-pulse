@@ -17,6 +17,8 @@ Before a source goes live, check two things (see SOURCES.md):
   1. robots.txt — checked automatically before every request (feeds.allowed); a disallowed feed is never read.
   2. Terms of use — by hand: they must not forbid showing a headline, a short description and a link,
      or automated access. Mark the entry "terms": "checked" once you have looked.
+Removed because they don't allow automated reading: ITUC and Global Labour Column (robots.txt), Countercurrents and
+Janchowk (refuse our requests, 403). Global Labour Journal isn't registered with Crossref under its ISSN.
 A feed that fails three runs in a row shows as failing in `python -m labourpulse sources`.
 """
 
@@ -27,7 +29,6 @@ SOURCES = [
     {"name": "Labor Notes", "url": "https://labornotes.org/rss.xml", "category": "news", "lang": "en"},
     {"name": "Equal Times", "url": "https://www.equaltimes.org/spip.php?page=backend&lang=en", "category": "news", "lang": "en"},
     {"name": "Payday Report", "url": "https://paydayreport.com/feed/", "category": "news", "lang": "en"},
-    {"name": "ITUC", "url": "https://www.ituc-csi.org/spip.php?page=backend&lang=en", "category": "news", "lang": "en"},
     {"name": "IndustriALL", "url": "https://www.industriall-union.org/feed", "category": "news", "lang": "en"},
     {"name": "UNI Global Union", "url": "https://uniglobalunion.org/feed/", "category": "news", "lang": "en"},
     {"name": "Peoples Dispatch", "url": "https://peoplesdispatch.org/feed/", "category": "news", "lang": "en", "filter": True},
@@ -38,7 +39,6 @@ SOURCES = [
     {"name": "Rest of World", "url": "https://restofworld.org/feed/latest", "category": "news", "lang": "en", "filter": True},
     # India (English)
     {"name": "GroundXero", "url": "https://www.groundxero.in/feed/", "category": "news", "lang": "en", "filter": True},
-    {"name": "Countercurrents", "url": "https://countercurrents.org/feed/", "category": "news", "lang": "en", "filter": True},
     {"name": "The India Forum", "url": "https://www.theindiaforum.in/rss.xml", "category": "news", "lang": "en", "filter": True},
 
     # --- Platform & domestic work ---
@@ -49,7 +49,6 @@ SOURCES = [
     {"name": "मज़दूर बिगुल (Mazdoor Bigul)", "url": "https://www.mazdoorbigul.net/feed", "category": "news", "lang": "hi"},
     {"name": "वर्कर्स यूनिटी (Workers Unity)", "url": "https://www.workersunity.com/feed/", "category": "news", "lang": "hi"},
     {"name": "मेहनतकश (Mehnatkash)", "url": "https://mehnatkash.in/feed/", "category": "news", "lang": "hi"},
-    {"name": "जनचौक (Janchowk)", "url": "https://janchowk.com/feed/", "category": "news", "lang": "hi", "filter": True},
     {"name": "द वायर हिंदी (The Wire Hindi)", "url": "https://thewirehindi.com/feed/", "category": "news", "lang": "hi", "filter": True},
 
     # --- Marathi (few labour outlets publish feeds: add the ones you read) ---
@@ -67,7 +66,6 @@ SOURCES = [
     {"name": "Tricontinental", "url": "https://thetricontinental.org/feed/", "category": "theory", "lang": "en"},
     {"name": "Developing Economics", "url": "https://developingeconomics.org/feed/", "category": "theory", "lang": "en"},
     {"name": "ROAPE", "url": "https://roape.net/feed/", "category": "theory", "lang": "en"},
-    {"name": "Global Labour Column", "url": "https://globallabourcolumn.org/feed/", "category": "theory", "lang": "en"},
 
     # --- Policy & courts: official and institutional ---
     {"name": "ILO", "url": "https://www.ilo.org/rss.xml", "category": "policy", "lang": "en"},
@@ -92,7 +90,6 @@ JOURNALS = [
     {"name": "Historical Materialism", "issn": "1569-206X"},
     {"name": "Review of Radical Political Economics", "issn": "1552-8502"},
     {"name": "Science & Society", "issn": "1943-2801"},
-    {"name": "Global Labour Journal", "issn": "1918-7351"},
     {"name": "Work, Employment and Society", "issn": "1469-8722"},
     {"name": "Economic and Industrial Democracy", "issn": "1461-7099"},
     {"name": "Industrial Relations Journal", "issn": "1468-2338"},

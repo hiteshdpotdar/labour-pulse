@@ -176,7 +176,7 @@ def sync_india(conn, fetcher=feeds.fetch, log=print) -> int:
         time.sleep(1)
     changed = 0
     for key, b in found.items():
-        url = (b.get("billIntroducedFile") or "https://sansad.in/ls/legislation/bills").replace(" ", "%20")
+        url = (b.get("billIntroducedFile") or f"https://sansad.in/ls/legislation/bills?bill={key}").replace(" ", "%20")
         bill = {"key": key, "jurisdiction": "IN", "title": (b["billName"] or "").strip().rstrip("."), "url": url,
                 "source": "Parliament of India", "history": in_history(b)}
         if bill["history"]:

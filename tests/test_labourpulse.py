@@ -162,3 +162,20 @@ def test_places_and_languages():
 def test_crossref_parse_skips_housekeeping():
     items = crossref.parse(CROSSREF, "Antipode")
     assert len(items) == 1 and items[0]["summary"] == "We study platforms in Mumbai."
+
+
+def test_moved_feed_is_found_from_homepage(conn):
+    import urllib.error
+    pages = {"https://moved.example/": b'<html><head><link rel="alternate" type="application/rss+xml" '
+                                        b'href="/comments/feed/"><link rel="alternate" type="application/rss+xml" '
+                                        b'href="/news/rss"></head></html>',
+             "https://moved.example/news/rss": FEEDS["https://labour.example/feed"]}
+
+    def fetch(url, *a, **k):
+        if url in pages:
+            return pages[url]
+        raise urllib.error.HTTPError(url, 404, "Not Found", {}, None)
+    added, errors = collect.collect_feeds(conn, [{"name": "Moved", "url": "https://moved.example/feed/", "category": "news",
+                                                  "lang": "en"}], max_age_days=30, fetcher=fetch, log=lambda *_: None)
+    assert added == 2 and not errors
+    assert store.source_health(conn)[0]["url"] == "https://moved.example/news/rss"

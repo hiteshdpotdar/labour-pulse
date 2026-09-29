@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 import time
+import urllib.error
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 
 from . import bills, classify, crossref, feeds, jurisdictions, store
@@ -55,13 +57,26 @@ def collect_feeds(conn, sources=SOURCES, max_age_days: int = 3, fetcher=feeds.fe
     for src in sources:
         try:
             parse = feeds.PARSERS[src.get("format", "feed")]
-            entries = [e for e in parse(fetcher(src["url"])) if _fresh(e, max_age_days)]
+            url = src["url"]
+            try:
+                parsed = parse(fetcher(url))
+            except (urllib.error.HTTPError, ET.ParseError) as first:
+                # A moved feed (404) or a page that isn't a feed: look for the feed the homepage advertises.
+                if src.get("format", "feed") != "feed" or (isinstance(first, urllib.error.HTTPError) and first.code != 404):
+                    raise
+                found = feeds.discover(url, fetcher)
+                if not found or found == url:
+                    raise
+                url = found
+                parsed = parse(fetcher(url))
+                log(f"  {src['name']}: feed found at {url} (update sources.py)")
+            entries = [e for e in parsed if _fresh(e, max_age_days)]
             n = 0
             for e in entries:
                 item = make_item(e, src)
                 if item and not store.exists(conn, item["url"]) and not store.title_seen(conn, item["title"]):
                     n += store.insert(conn, item)
-            store.record_source(conn, src["name"], src["url"], True, count=n)
+            store.record_source(conn, src["name"], url, True, count=n)
             added += n
             log(f"  {src['name']}: {n} new")
         except Exception as e:  # a broken feed mustn't stop the run
