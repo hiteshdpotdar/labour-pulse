@@ -1,0 +1,6 @@
+*.db
+*.db-wal
+*.db-shm
+site/
+__pycache__/
+.pytest_cache/
