@@ -66,7 +66,7 @@ SOURCES = [
     {"name": "Tricontinental", "url": "https://thetricontinental.org/feed/", "category": "theory", "lang": "en"},
     {"name": "Developing Economics", "url": "https://developingeconomics.org/feed/", "category": "theory", "lang": "en"},
     {"name": "ROAPE", "url": "https://roape.net/feed/", "category": "theory", "lang": "en"},
-     {"name": "Anvil", "url": "https://anvilmag.in/feed/", "category": "theory", "lang": "en"}
+    {"name": "Anvil", "url": "https://anvilmag.in/feed/", "category": "theory", "lang": "en"},
 
     # --- Policy & courts: official and institutional ---
     {"name": "ILO", "url": "https://www.ilo.org/rss.xml", "category": "policy", "lang": "en"},
